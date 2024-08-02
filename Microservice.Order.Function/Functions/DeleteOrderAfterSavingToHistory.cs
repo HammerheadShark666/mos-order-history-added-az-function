@@ -4,6 +4,7 @@ using Microservice.Order.Function.Helpers;
 using Microservice.Order.Function.MediatR.DeleteOrderHistory;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
+using System.Text;
 
 namespace Microservice.Order.Function.Functions
 {
@@ -18,7 +19,11 @@ namespace Microservice.Order.Function.Functions
                                                  ServiceBusReceivedMessage message,
                                                  ServiceBusMessageActions messageActions)
         {
+            _logger.LogInformation("Message: " + Encoding.UTF8.GetString(message.Body.ToArray()));
+
             var orderId = JsonHelper.GetRequest<Guid>(message.Body.ToArray());
+
+            _logger.LogInformation("Order Id: " + orderId.ToString());
 
             try
             {
