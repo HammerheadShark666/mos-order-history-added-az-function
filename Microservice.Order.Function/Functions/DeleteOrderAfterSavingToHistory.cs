@@ -4,7 +4,6 @@ using Microservice.Order.Function.Helpers;
 using Microservice.Order.Function.MediatR.DeleteOrderHistory;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
-using System.Text;
 
 namespace Microservice.Order.Function.Functions
 {
@@ -18,8 +17,8 @@ namespace Microservice.Order.Function.Functions
         [Function(nameof(DeleteOrderAfterSavingToHistory))]
         public async Task Run([ServiceBusTrigger(Constants.AzureServiceBusQueueOrderHistoryAdded,
                                                  Connection = Constants.AzureServiceBusConnection)]
-                                                 ServiceBusReceivedMessage message,
-                                                 ServiceBusMessageActions messageActions)
+                                                 ServiceBusReceivedMessage message)
+                                                 //ServiceBusMessageActions messageActions)
         { 
             var orderId = GetOrderId(message.Body.ToArray());
 
@@ -28,7 +27,7 @@ namespace Microservice.Order.Function.Functions
             try
             { 
                 await _mediator.Send(new DeleteOrderRequest(orderId));
-                await messageActions.CompleteMessageAsync(message);
+               // await messageActions.CompleteMessageAsync(message);
 
                 _logger.LogInformation("Order deleted: " + orderId.ToString());
 
@@ -37,7 +36,7 @@ namespace Microservice.Order.Function.Functions
             catch (Exception ex)
             {
                 _logger.LogError(ex, string.Format("Internal Error: Id: {0}", orderId.ToString()));
-                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
+                //await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
             }
         }
 
