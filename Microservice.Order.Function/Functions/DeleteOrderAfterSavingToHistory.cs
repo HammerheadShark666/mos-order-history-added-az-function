@@ -20,19 +20,17 @@ namespace Microservice.Order.Function.Functions
                                                  Connection = Constants.AzureServiceBusConnection)]
                                                  ServiceBusReceivedMessage message,
                                                  ServiceBusMessageActions messageActions)
-        {
-            _logger.LogInformation("Message: " + Encoding.UTF8.GetString(message.Body.ToArray()).ToString());
- 
+        { 
             var orderId = GetOrderId(message.Body.ToArray());
 
-            _logger.LogInformation("Order Id: " + orderId.ToString());
+            _logger.LogInformation(string.Format("Order History Added - Delete Order - {0}", orderId.ToString()));
 
             try
-            {
-                _logger.LogInformation(string.Format("Order History Added - Delete Order - {0}", orderId.ToString()));
-
+            { 
                 await _mediator.Send(new DeleteOrderRequest(orderId));
                 await messageActions.CompleteMessageAsync(message);
+
+                _logger.LogInformation("Order deleted: " + orderId.ToString());
 
                 return;
             }
