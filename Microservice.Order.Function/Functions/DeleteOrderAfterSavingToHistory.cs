@@ -16,8 +16,8 @@ namespace Microservice.Order.Function.Functions
 
         [Function(nameof(DeleteOrderAfterSavingToHistory))]
         public async Task Run([ServiceBusTrigger(Constants.AzureServiceBusQueueOrderHistoryAdded,
-                                                 Connection = Constants.AzureServiceBusConnection)]
-                                                 ServiceBusReceivedMessage message,
+                                                 Connection = Constants.AzureServiceBusConnection, AutoCompleteMessages = false)]
+                                                 ServiceBusReceivedMessage message, 
                                                  ServiceBusMessageActions messageActions)
         { 
             var orderId = GetOrderId(message.Body.ToArray());
@@ -26,19 +26,36 @@ namespace Microservice.Order.Function.Functions
 
             try
             {
-                // await _mediator.Send(new DeleteOrderRequest(orderId));
-                // await messageActions.CompleteMessageAsync(message);
 
-                throw new Exception("Exce");
-                //_logger.LogInformation("Order deleted: " + orderId.ToString());
+                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.StackTrace);
+
+                //throw new Exception("Exce");
+                //await _mediator.Send(new DeleteOrderRequest(orderId));
+                //await messageActions.CompleteMessageAsync(message);
 
                 //return;
-            }
+            } 
             catch (Exception ex)
             {
                 _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
-                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
+                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.StackTrace);
             }
+
+            //try
+            //{
+            //    // await _mediator.Send(new DeleteOrderRequest(orderId));
+            //    // await messageActions.CompleteMessageAsync(message);
+
+            //    throw new Exception("Exce");
+            //    //_logger.LogInformation("Order deleted: " + orderId.ToString());
+
+            //    //return;
+            //}
+            //catch (Exception ex)
+            //{
+            //    _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
+            //    await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
+            //}
         }
 
         private Guid GetOrderId(byte[] message)
