@@ -25,12 +25,11 @@ namespace Microservice.Order.Function.Functions
             _logger.LogInformation(string.Format("Order History Added - Delete Order - {0}", orderId.ToString()));
 
             try
-            {  
-                throw new Exception("Exce");
-                //await _mediator.Send(new DeleteOrderRequest(orderId));
-                //await messageActions.CompleteMessageAsync(message);
+            {   
+                await _mediator.Send(new DeleteOrderRequest(orderId));
+                await messageActions.CompleteMessageAsync(message);
 
-                //return;
+                return;
             } 
             catch (Exception ex)
             {
