@@ -18,7 +18,7 @@
         "maxDelay": "00:01:00",
         "maxRetries": 3
       },
-      "prefetchCount": 241, 
+      "prefetchCount": 0, 
       "autoCompleteMessages": false,
       "maxAutoLockRenewalDuration": "00:01:00",
       "maxConcurrentCalls": 16,
