@@ -19,7 +19,7 @@
         "maxRetries": 3
       },
       "prefetchCount": 0, 
-      "autoCompleteMessages": false,
+      "autoCompleteMessages": true,
       "maxAutoLockRenewalDuration": "00:01:00",
       "maxConcurrentCalls": 16,
       "maxConcurrentSessions": 8,
