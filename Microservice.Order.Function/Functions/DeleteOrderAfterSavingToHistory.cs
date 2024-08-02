@@ -19,7 +19,7 @@ namespace Microservice.Order.Function.Functions
                                                  ServiceBusReceivedMessage message,
                                                  ServiceBusMessageActions messageActions)
         {
-            _logger.LogInformation("Message: " + Encoding.UTF8.GetString(message.Body.ToArray()));
+            _logger.LogInformation("Message: " + Encoding.UTF8.GetString(message.Body.ToArray()).ToString());
 
             var orderId = JsonHelper.GetRequest<Guid>(message.Body.ToArray());
 
