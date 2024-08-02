@@ -27,7 +27,7 @@ namespace Microservice.Order.Function.Functions
             try
             {
 
-                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.StackTrace);
+                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, "ex.StackTrace");
 
                 //throw new Exception("Exce");
                 //await _mediator.Send(new DeleteOrderRequest(orderId));
