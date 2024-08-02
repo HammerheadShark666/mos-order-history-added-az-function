@@ -17,8 +17,8 @@ namespace Microservice.Order.Function.Functions
         [Function(nameof(DeleteOrderAfterSavingToHistory))]
         public async Task Run([ServiceBusTrigger(Constants.AzureServiceBusQueueOrderHistoryAdded,
                                                  Connection = Constants.AzureServiceBusConnection)]
-                                                 ServiceBusReceivedMessage message)
-                                                 //ServiceBusMessageActions messageActions)
+                                                 ServiceBusReceivedMessage message,
+                                                 ServiceBusMessageActions messageActions)
         { 
             var orderId = GetOrderId(message.Body.ToArray());
 
@@ -26,10 +26,10 @@ namespace Microservice.Order.Function.Functions
 
             try
             {
-                throw new Exception("exception");
-               // await _mediator.Send(new DeleteOrderRequest(orderId));
-               // await messageActions.CompleteMessageAsync(message);
+                // await _mediator.Send(new DeleteOrderRequest(orderId));
+                // await messageActions.CompleteMessageAsync(message);
 
+                throw new Exception("Exce");
                 //_logger.LogInformation("Order deleted: " + orderId.ToString());
 
                 //return;
@@ -37,7 +37,7 @@ namespace Microservice.Order.Function.Functions
             catch (Exception ex)
             {
                 _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
-                //await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
+                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
             }
         }
 
