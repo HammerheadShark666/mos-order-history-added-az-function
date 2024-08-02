@@ -10,6 +10,6 @@ public class JsonHelper
         if(message == null)
             throw new ArgumentNullException("Message parameter cannot be null.");
 
-        return JsonSerializer.Deserialize<T>(Encoding.UTF8.GetString(message));
+        return JsonSerializer.Deserialize<T>(Encoding.UTF8.GetString(message).ToString());
     }
 }
