@@ -10,6 +10,8 @@ namespace Microservice.Order.Function.Functions
 {
     public class DeleteOrderAfterSavingToHistory(ILogger<DeleteOrderAfterSavingToHistory> logger, IMediator mediator)
     {
+        private record Order(Guid OrderId);
+
         private ILogger<DeleteOrderAfterSavingToHistory> _logger { get; set; } = logger;
         private IMediator _mediator { get; set; } = mediator;
 
@@ -20,8 +22,8 @@ namespace Microservice.Order.Function.Functions
                                                  ServiceBusMessageActions messageActions)
         {
             _logger.LogInformation("Message: " + Encoding.UTF8.GetString(message.Body.ToArray()).ToString());
-
-            var orderId = JsonHelper.GetRequest<Guid>(message.Body.ToArray());
+ 
+            var orderId = GetOrderId(message.Body.ToArray());
 
             _logger.LogInformation("Order Id: " + orderId.ToString());
 
@@ -39,6 +41,16 @@ namespace Microservice.Order.Function.Functions
                 _logger.LogError(ex, string.Format("Internal Error: Id: {0}", orderId.ToString()));
                 await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
             }
+        }
+
+        private Guid GetOrderId(byte[] message)
+        {
+            var order = JsonHelper.GetRequest<Order>(message);
+            if (order == null)
+                throw new ArgumentNullException("Order not in message.");
+
+            return order.OrderId;
+
         }
     }
 }
