@@ -30,13 +30,13 @@ namespace Microservice.Order.Function.Functions
                // await _mediator.Send(new DeleteOrderRequest(orderId));
                // await messageActions.CompleteMessageAsync(message);
 
-                _logger.LogInformation("Order deleted: " + orderId.ToString());
+                //_logger.LogInformation("Order deleted: " + orderId.ToString());
 
-                return;
+                //return;
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, string.Format("Internal Error: Id: {0}", orderId.ToString()));
+                _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
                 //await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
             }
         }
