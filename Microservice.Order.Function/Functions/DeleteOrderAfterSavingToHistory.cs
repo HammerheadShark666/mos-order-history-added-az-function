@@ -25,11 +25,8 @@ namespace Microservice.Order.Function.Functions
             _logger.LogInformation(string.Format("Order History Added - Delete Order - {0}", orderId.ToString()));
 
             try
-            {
-
-                await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, "ex.StackTrace");
-
-                //throw new Exception("Exce");
+            {  
+                throw new Exception("Exce");
                 //await _mediator.Send(new DeleteOrderRequest(orderId));
                 //await messageActions.CompleteMessageAsync(message);
 
@@ -40,22 +37,6 @@ namespace Microservice.Order.Function.Functions
                 _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
                 await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.StackTrace);
             }
-
-            //try
-            //{
-            //    // await _mediator.Send(new DeleteOrderRequest(orderId));
-            //    // await messageActions.CompleteMessageAsync(message);
-
-            //    throw new Exception("Exce");
-            //    //_logger.LogInformation("Order deleted: " + orderId.ToString());
-
-            //    //return;
-            //}
-            //catch (Exception ex)
-            //{
-            //    _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
-            //    await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.Message);
-            //}
         }
 
         private Guid GetOrderId(byte[] message)
