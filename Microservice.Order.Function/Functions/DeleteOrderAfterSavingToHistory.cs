@@ -9,7 +9,7 @@ namespace Microservice.Order.Function.Functions
 {
     public class DeleteOrderAfterSavingToHistory(ILogger<DeleteOrderAfterSavingToHistory> logger, IMediator mediator)
     {
-        private record Order(Guid OrderId);
+        private record Order(string OrderId);
 
         private ILogger<DeleteOrderAfterSavingToHistory> _logger { get; set; } = logger;
         private IMediator _mediator { get; set; } = mediator;
@@ -44,7 +44,7 @@ namespace Microservice.Order.Function.Functions
             if (order == null)
                 throw new ArgumentNullException("Order not in message.");
 
-            return order.OrderId;
+            return new Guid(order.OrderId);
 
         }
     }
