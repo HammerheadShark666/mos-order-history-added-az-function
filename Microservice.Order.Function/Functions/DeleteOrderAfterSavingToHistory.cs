@@ -15,7 +15,7 @@ namespace Microservice.Order.Function.Functions
         private IMediator _mediator { get; set; } = mediator;
 
         [Function(nameof(DeleteOrderAfterSavingToHistory))]
-        public async Task Run([ServiceBusTrigger(Constants.AzureServiceBusQueueOrderHistoryAdded,
+        public async Task Run([ServiceBusTrigger("%" + Constants.AzureServiceBusQueueOrderHistoryAdded + "%",
                                                  Connection = Constants.AzureServiceBusConnection, AutoCompleteMessages = false)]
                                                  ServiceBusReceivedMessage message, 
                                                  ServiceBusMessageActions messageActions)
