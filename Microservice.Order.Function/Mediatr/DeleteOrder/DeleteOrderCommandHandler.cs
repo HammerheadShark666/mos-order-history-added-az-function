@@ -20,7 +20,7 @@ public class DeleteOrderCommandHandler(IOrderRepository orderRepository,
         } 
         else
         {
-            _logger.LogWarning(String.Format("Order record not found to delete: {0}", deleteOrderRequest.Id.ToString()));
+            _logger.LogWarning(String.Format("Order record not found to delete: {0}.", deleteOrderRequest.Id.ToString()));
         }
 
         return new DeleteOrderResponse(); 
