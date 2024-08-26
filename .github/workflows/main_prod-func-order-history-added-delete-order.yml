@@ -22,7 +22,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
@@ -30,7 +30,7 @@ jobs:
         shell: pwsh
         run: |
           pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
-          dotnet build --configuration Release --output ./output
+          dotnet build --configuration Release
           popd
       
       - name: 'Run Azure Functions Action'
