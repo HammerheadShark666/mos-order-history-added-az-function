@@ -1,7 +1,7 @@
 using Azure.Messaging.ServiceBus;
 using MediatR;
 using Microservice.Order.Function.Helpers;
-using Microservice.Order.Function.MediatR.DeleteOrderHistory;
+using Microservice.Order.Function.Mediatr.DeleteOrder;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -17,33 +17,30 @@ namespace Microservice.Order.Function.Functions
         [Function(nameof(DeleteOrderAfterSavingToHistory))]
         public async Task Run([ServiceBusTrigger("%" + Constants.AzureServiceBusQueueOrderHistoryAdded + "%",
                                                  Connection = Constants.AzureServiceBusConnection, AutoCompleteMessages = false)]
-                                                 ServiceBusReceivedMessage message, 
+                                                 ServiceBusReceivedMessage message,
                                                  ServiceBusMessageActions messageActions)
-        { 
+        {
             var orderId = GetOrderId(message.Body.ToArray());
 
-            _logger.LogInformation(string.Format("Order History Added - Delete Order - {0}", orderId.ToString()));
+            _logger.LogInformation($"Order History Added - Delete Order - {orderId}");
 
             try
-            {   
+            {
                 await _mediator.Send(new DeleteOrderRequest(orderId));
                 await messageActions.CompleteMessageAsync(message);
 
                 return;
-            } 
+            }
             catch (Exception ex)
             {
-                _logger.LogError(ex, string.Format("Internal Error: Id: {0} - {1}", orderId.ToString(), ex.Message));
+                _logger.LogError(ex, $"Internal Error: Id: {orderId} - {ex.Message}");
                 await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.StackTrace);
             }
         }
 
-        private Guid GetOrderId(byte[] message)
+        private static Guid GetOrderId(byte[] message)
         {
-            var order = JsonHelper.GetRequest<Order>(message);
-            if (order == null)
-                throw new ArgumentNullException("Order not in message.");
-
+            var order = JsonHelper.GetRequest<Order>(message) ?? throw new ArgumentNullException("Order not in message.");
             return new Guid(order.OrderId);
 
         }

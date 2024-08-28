@@ -1,5 +1,5 @@
 ﻿using MediatR;
 
-namespace Microservice.Order.Function.MediatR.DeleteOrderHistory;
+namespace Microservice.Order.Function.Mediatr.DeleteOrder;
 
 public record DeleteOrderRequest(Guid Id) : IRequest<DeleteOrderResponse>;

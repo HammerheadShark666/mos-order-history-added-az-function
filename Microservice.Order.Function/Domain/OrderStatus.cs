@@ -8,7 +8,7 @@ namespace Microservice.Order.Function.Domain;
 public class OrderStatus
 {
     [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)] 
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public Enums.OrderStatus Id { get; set; }
 
     [MaxLength(75)]

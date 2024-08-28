@@ -1,4 +1,4 @@
-using Microservice.Order.Function.Data.Contexts;
+using Microservice.Order.Function.Data.Context;
 using Microservice.Order.Function.Data.Repository;
 using Microservice.Order.Function.Data.Repository.Interfaces;
 using Microservice.Order.Function.Helpers;
@@ -24,9 +24,9 @@ var host = new HostBuilder()
         services.ConfigureFunctionsApplicationInsights();
 
         var configuration = services.BuildServiceProvider().GetService<IConfiguration>();
-         
-        services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly())); 
-        services.AddScoped<IOrderRepository, OrderRepository>(); 
+
+        services.AddMediatR(_ => _.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+        services.AddScoped<IOrderRepository, OrderRepository>();
         services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
         services.AddMemoryCache();
 

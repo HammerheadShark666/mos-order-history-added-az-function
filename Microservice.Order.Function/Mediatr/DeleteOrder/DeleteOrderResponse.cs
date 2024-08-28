@@ -1,3 +1,3 @@
-namespace Microservice.Order.Function.MediatR.DeleteOrderHistory;
+namespace Microservice.Order.Function.Mediatr.DeleteOrder;
 
 public record DeleteOrderResponse();
