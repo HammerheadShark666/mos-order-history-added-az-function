@@ -6,8 +6,8 @@ namespace Microservice.Order.Function.Domain;
 
 [Table("MSOS_ProductType")]
 public class ProductType
-{ 
-     [Key]
+{
+    [Key]
     public Enums.ProductType Id { get; set; }
 
     [MaxLength(75)]

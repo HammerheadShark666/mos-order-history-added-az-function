@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema; 
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Microservice.Order.Function.Domain;
 
@@ -23,7 +23,7 @@ public class Order
 
     public int OrderNumber { get; set; }
 
-    public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
+    public List<OrderItem> OrderItems { get; set; } = [];
 
     public Helpers.Enums.OrderStatus OrderStatusId { get; set; }
 
