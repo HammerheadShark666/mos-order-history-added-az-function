@@ -17,7 +17,7 @@ public class DeleteOrderCommandHandler(IOrderRepository orderRepository,
         }
         else
         {
-            logger.LogWarning("Order record not found to delete: {deleteOrderRequest.Id}", deleteOrderRequest.Id);
+            logger.LogWarning("Order record not found to delete: {deleteOrderRequest.Id}.", deleteOrderRequest.Id);
         }
 
         return new DeleteOrderResponse();
