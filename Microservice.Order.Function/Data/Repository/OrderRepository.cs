@@ -1,4 +1,5 @@
-﻿using Microservice.Order.Function.Data.Context;
+﻿using Microservice.Customer.Address.Function.Helpers.Exceptions;
+using Microservice.Order.Function.Data.Context;
 using Microservice.Order.Function.Data.Repository.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,11 +7,9 @@ namespace Microservice.Order.Function.Data.Repository;
 
 public class OrderRepository(IDbContextFactory<OrderDbContext> dbContextFactory) : IOrderRepository
 {
-    public IDbContextFactory<OrderDbContext> _dbContextFactory { get; set; } = dbContextFactory;
-
     public async Task Delete(Domain.Order order)
     {
-        using var db = _dbContextFactory.CreateDbContext();
+        using var db = dbContextFactory.CreateDbContext();
 
         db.Orders.Remove(order);
         await db.SaveChangesAsync();
@@ -18,12 +17,14 @@ public class OrderRepository(IDbContextFactory<OrderDbContext> dbContextFactory)
 
     public async Task<Domain.Order> GetByIdAsync(Guid id)
     {
-        await using var db = await _dbContextFactory.CreateDbContextAsync();
-        return await db.Orders
+        await using var db = await dbContextFactory.CreateDbContextAsync();
+
+        var order = await db.Orders
                         .Where(o => o.Id.Equals(id))
                         .Include(e => e.OrderItems)
                         .Include("OrderItems.ProductType")
                         .Include(e => e.OrderStatus)
-                        .SingleOrDefaultAsync();
+                        .SingleOrDefaultAsync() ?? throw new NotFoundException("Order not found.");
+        return order;
     }
 }
