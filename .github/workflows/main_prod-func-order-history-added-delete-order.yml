@@ -25,10 +25,10 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build Microservice.Order.History.Function/Microservice.Order.History.Function.csproj --configuration Release
+        run: dotnet build Microservice.Order.Function/Microservice.Order.Function.csproj --configuration Release
 
       - name: Unit Tests
-        run: dotnet test Microservice.Order.History.Function.Test.Unit/Microservice.Order.History.Function.Test.Unit.csproj --logger "console;verbosity=detailed"
+        run: dotnet test Microservice.Order.Function.Test.Unit/Microservice.Order.Function.Test.Unit.csproj --logger "console;verbosity=detailed"
   
   build-and-deploy:
     runs-on: windows-latest
