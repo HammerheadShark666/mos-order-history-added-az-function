@@ -18,28 +18,27 @@ namespace Microservice.Order.Function.Functions
                                                  ServiceBusReceivedMessage message,
                                                  ServiceBusMessageActions messageActions)
         {
-            var orderId = GetOrderId(message.Body.ToArray());
+            var deleteOrderRequest = GetDeleteOrderRequest(message.Body.ToArray());
 
-            logger.LogInformation("Order History Added - Delete Order - {orderId}", orderId);
+            logger.LogInformation("Order History Added - Delete Order - {orderId}", deleteOrderRequest.Id);
 
             try
             {
-                await mediator.Send(new DeleteOrderRequest(orderId));
+                await mediator.Send(deleteOrderRequest);
                 await messageActions.CompleteMessageAsync(message);
 
                 return;
             }
             catch (Exception ex)
             {
-                logger.LogError(ex, "Internal Error: Id: {orderId} - {ex.Message}", orderId, ex.Message);
+                logger.LogError(ex, "Internal Error: Id: {orderId} - {ex.Message}", deleteOrderRequest.Id, ex.Message);
                 await messageActions.DeadLetterMessageAsync(message, null, Constants.FailureReasonInternal, ex.StackTrace);
             }
         }
 
-        private static Guid GetOrderId(byte[] message)
+        private static DeleteOrderRequest GetDeleteOrderRequest(byte[] message)
         {
-            Order? order = JsonHelper.GetRequest<Order>([.. message]) ?? throw new JsonDeserializeException("Error deserializing Order.");
-            return new Guid(order.OrderId);
+            return JsonHelper.GetRequest<DeleteOrderRequest>([.. message]) ?? throw new JsonDeserializeException("Error deserializing Order.");
         }
     }
 }
