@@ -7,9 +7,9 @@ namespace Microservice.Order.Function.Data.Repository;
 
 public class OrderRepository(IDbContextFactory<OrderDbContext> dbContextFactory) : IOrderRepository
 {
-    public async Task Delete(Domain.Order order)
+    public async Task DeleteAsync(Domain.Order order)
     {
-        using var db = dbContextFactory.CreateDbContext();
+        await using var db = await dbContextFactory.CreateDbContextAsync();
 
         db.Orders.Remove(order);
         await db.SaveChangesAsync();

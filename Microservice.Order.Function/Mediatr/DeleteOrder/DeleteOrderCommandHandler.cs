@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microservice.Customer.Address.Function.Helpers.Exceptions;
 using Microservice.Order.Function.Data.Repository.Interfaces;
 using Microservice.Order.Function.Mediatr.DeleteOrder;
 using Microsoft.Extensions.Logging;
@@ -10,12 +11,12 @@ public class DeleteOrderCommandHandler(IOrderRepository orderRepository,
 {
     public async Task<DeleteOrderResponse> Handle(DeleteOrderRequest deleteOrderRequest, CancellationToken cancellationToken)
     {
-        var order = await orderRepository.GetByIdAsync(deleteOrderRequest.Id);
-        if (order != null)
+        try
         {
-            await orderRepository.Delete(order);
+            var order = await orderRepository.GetByIdAsync(deleteOrderRequest.Id);
+            await orderRepository.DeleteAsync(order);
         }
-        else
+        catch (NotFoundException)
         {
             logger.LogWarning("Order record not found to delete: {deleteOrderRequest.Id}.", deleteOrderRequest.Id);
         }
