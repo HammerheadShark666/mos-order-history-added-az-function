@@ -1,7 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using MediatR;
 using Microservice.Order.Function.Functions;
-using Microservice.Order.Function.Mediatr.DeleteOrder;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -14,7 +13,7 @@ public class DeleteOrderFromOrderHistoryAddedAzureFunctionTests
     private readonly Mock<IMediator> _mockMediator;
     private readonly Mock<ILogger<DeleteOrderAfterSavingToHistory>> _mockLogger;
     private readonly DeleteOrderAfterSavingToHistory _deleteOrderAfterSavingToHistory;
-
+    private record Order(string OrderId);
     public DeleteOrderFromOrderHistoryAddedAzureFunctionTests()
     {
         _mockMediator = new Mock<IMediator>();
@@ -25,11 +24,9 @@ public class DeleteOrderFromOrderHistoryAddedAzureFunctionTests
     [Test, Order(1)]
     public async Task Azure_function_trigger_service_bus_receive_return_succeed()
     {
-        Guid orderId = new("724cbd34-3dff-4e2a-a413-48825f1ab3b9");
+        var deleteOrder = new Order("724cbd34-3dff-4e2a-a413-48825f1ab3b9");
 
-        var deleteOrderRequest = new DeleteOrderRequest(orderId);
-
-        var mockMessage = ServiceBusModelFactory.ServiceBusReceivedMessage(BinaryData.FromString(JsonConvert.SerializeObject(deleteOrderRequest)), correlationId: Guid.NewGuid().ToString());
+        var mockMessage = ServiceBusModelFactory.ServiceBusReceivedMessage(BinaryData.FromString(JsonConvert.SerializeObject(deleteOrder)), correlationId: Guid.NewGuid().ToString());
 
         var mockServiceBusMessageActions = new Mock<ServiceBusMessageActions>();
         mockServiceBusMessageActions.Setup(x => x.CompleteMessageAsync(mockMessage, CancellationToken.None)).Returns(Task.FromResult(true));
