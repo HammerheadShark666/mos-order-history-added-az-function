@@ -1,7 +1,6 @@
 using Azure.Messaging.ServiceBus;
 using MediatR;
 using Microservice.Order.Function.Helpers;
-using Microservice.Order.Function.Helpers.Exceptions;
 using Microservice.Order.Function.Mediatr.DeleteOrder;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -38,7 +37,8 @@ namespace Microservice.Order.Function.Functions
 
         private static DeleteOrderRequest GetDeleteOrderRequest(byte[] message)
         {
-            return JsonHelper.GetRequest<DeleteOrderRequest>([.. message]) ?? throw new JsonDeserializeException("Error deserializing Order.");
+            var order = JsonHelper.GetRequest<Order>(message) ?? throw new ArgumentNullException(nameof(message), "Order id not in message.");
+            return new DeleteOrderRequest(new Guid(order.OrderId));
         }
     }
 }
