@@ -13,7 +13,7 @@ namespace Microservice.Order.Function.Functions
 
         [Function(nameof(DeleteOrderAfterSavingToHistory))]
         public async Task Run([ServiceBusTrigger("%" + Constants.AzureServiceBusQueueOrderHistoryAdded + "%",
-                                                 Connection = Constants.AzureServiceBusConnection, AutoCompleteMessages = false)]
+                                                 Connection = Constants.AzureServiceBusConnectionManagedIdentity, AutoCompleteMessages = false)]
                                                  ServiceBusReceivedMessage message,
                                                  ServiceBusMessageActions messageActions)
         {
